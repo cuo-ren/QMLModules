@@ -10,11 +10,14 @@ Item{
     property int duration: 100
     signal clicked()
 
+    property bool isPressed: false
+    property bool isHover: false
+
     id: root
     width: 46
     height: 46
 
-    state: "common"
+    state: !isHover ? "common" : isPressed ? "press" : "active"
     states: [
         State {
             name: "common"
@@ -69,6 +72,33 @@ Item{
                 x: 29 * root.width / 46
                 y: 29 * root.height / 46
             }
+        },
+        State {
+            name: "press"
+            PropertyChanges {
+                target: part1
+                source: root.sourceActive
+                x: 4 * root.width / 46
+                y: 4 * root.height / 46
+            }
+            PropertyChanges {
+                target: part2
+                source: root.sourceActive
+                x: 21 * root.width / 46
+                y: 4 * root.height / 46
+            }
+            PropertyChanges {
+                target: part3
+                source: root.sourceActive
+                x: 4 * root.width / 46
+                y: 21 * root.height / 46
+            }
+            PropertyChanges {
+                target: part4
+                source: root.sourceActive
+                x: 21 * root.width / 46
+                y: 21 * root.height / 46
+            }
         }
     ]
 
@@ -102,14 +132,9 @@ Item{
     MouseArea{
         anchors.fill: parent
         hoverEnabled: true
-        onEntered: {
-            root.state = "active"
-
-        }
-        onExited: {
-            root.state = "common"
-        }
-
+        onHoveredChanged: root.isHover = containsMouse
+        onPressed: root.isPressed = true
+        onReleased: root.isPressed = false
         onClicked: root.clicked()
     }
 
